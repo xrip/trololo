@@ -53,7 +53,7 @@ const ListDraft = {
       this.title = '';
     }
   }
-}
+};
 
 export default ListDraft;
 </script>

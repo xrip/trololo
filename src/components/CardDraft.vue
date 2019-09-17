@@ -1,6 +1,6 @@
 <template>
-  <form :class="classList" @submit.prevent="addCardToList" @drop="onDrop" @dragover.prevent>
-    <input type="text" class="text-input" contenteditable="true" v-model="body" ref="textInput" placeholder="Add new card" @focusin="startEditing" @focusout="finishEditing">
+  <form :class="classList" @submit.prevent="addCardToList">
+    <input type="text" class="text-input" contenteditable="true" v-model="title" ref="textInput" placeholder="Add new card" @focusin="startEditing" @focusout="finishEditing">
     <button type="submit" class="add-button" v-if="isEditing || isAddable">
       Add
     </button>
@@ -15,7 +15,7 @@ const CardDraft = {
   data() {
     return {
       isEditing: false,
-      body: ''
+      title: ''
     }
   },
   computed: {
@@ -33,7 +33,7 @@ const CardDraft = {
       return classList;
     },
     bodyExists() {
-      return this.body.length > 0;
+      return this.title.length > 0;
     },
     isAddable() {
       return this.bodyExists
@@ -49,23 +49,12 @@ const CardDraft = {
     addCardToList() {
       this.$store.commit(types.ADD_CARD_TO_LIST, {
         to: this.$parent.index,
-        body: this.body
+        title: this.title
       });
-      this.body = '';
+      this.title = '';
     },
-    onDrop({ dataTransfer }) {
-      const { from } = JSON.parse(dataTransfer.getData("application/json"));
-      const to = {
-        listIndex: this.$parent.index,
-        cardIndex: null
-      }
-      this.moveCardToList({ from, to });
-    },
-    ...mapMutations({
-      moveCardToList: types.MOVE_CARD_TO_LIST
-    })
   }
-}
+};
 
 export default CardDraft;
 </script>

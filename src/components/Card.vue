@@ -1,19 +1,20 @@
 <template>
-  <div class="card" draggable="true" @drop="onDrop" @dragstart="onDragStart" @dragover.prevent>
-    <div class="close-button" @click="removeCardFromList">
+  <div  @click="showDetails" class="card" draggable="true" @drop="onDrop" @dragstart="onDragStart" @dragover.prevent>
+    <div class="close-button" @click.stop="removeCardFromList">
       x
     </div>
     <div class="body">
-      {{ body }}
+      {{ title }}
     </div>
     <div class="arrows">
-      <div :class="['arrow', 'left', movableToLeft ? '' : 'disabled']" @click="moveCardToLeft">
+      <div :class="['arrow', 'left', movableToLeft ? '' : 'disabled']" @click.stop="moveCardToLeft">
         ←
       </div>
-      <div :class="['arrow', 'right', movableToRight ? '' : 'disabled']" @click="moveCardToRight">
+      <div :class="['arrow', 'right', movableToRight ? '' : 'disabled']" @click.stop="moveCardToRight">
         →
       </div>
     </div>
+
   </div>
 </template>
 
@@ -22,7 +23,7 @@ import { mapGetters, mapMutations } from 'vuex';
 import * as types from '../store/mutation-types.js';
 
 const Card = {
-  props: ['body', 'index'],
+  props: ['title', 'index'],
   computed: {
     movableToLeft() {
       return this.$parent.index > 0;
@@ -35,7 +36,11 @@ const Card = {
     ])
   },
   methods: {
+    showDetails() {
+      this.$root.$emit('showCardDetails', {listIndex: this.$parent.index, cardIndex: this.index});
+    },
     removeCardFromList() {
+      if (confirm('Are you sure?'))
       this.$store.commit(types.REMOVE_CARD_FROM_LIST, {
         from: this.$parent.index,
         cardIndex: this.index
@@ -69,28 +74,36 @@ const Card = {
         });
       }
     },
-    onDragStart({ dataTransfer }) {
-      dataTransfer.effectAllowed = 'move';
+    onDragStart({dataTransfer}) {
       dataTransfer.setData("application/json", JSON.stringify({
+        source: 'card',
         from: {
           listIndex: this.$parent.index,
           cardIndex: this.index
         }
       }));
+      event.stopPropagation();
     },
-    onDrop({ dataTransfer }) {
-      const { from } = JSON.parse(dataTransfer.getData("application/json"));
+
+    onDrop(event) {
+      const { source, from } = JSON.parse(event.dataTransfer.getData("application/json"));
+
+      if (source !== 'card') return;
+
       const to = {
         listIndex: this.$parent.index,
         cardIndex: this.index
-      }
+      };
       this.moveCardToList({ from, to });
+
+      event.stopPropagation();
     },
     ...mapMutations({
-      moveCardToList: types.MOVE_CARD_TO_LIST
+      moveCardToList: types.MOVE_CARD_TO_LIST,
+
     })
   }
-}
+};
 
 export default Card;
 </script>
