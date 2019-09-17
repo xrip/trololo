@@ -1,4 +1,4 @@
-# Trollo
+# Trololo
 
 Simple Trello clone implemented with [Vue.js](https://vuejs.org/) and [Vuex](https://vuex.vuejs.org)
 
@@ -6,9 +6,12 @@ Simple Trello clone implemented with [Vue.js](https://vuejs.org/) and [Vuex](htt
 
 ![Example](https://github.com/syumai/trollo/blob/master/images/example.gif)
 
-https://syumai.github.io/trollo/
+https://xrip.github.io/trololo/
 
-Lists and cards are saved in `localStorage `.
+## Features
+- Lists and cards can be moved 
+- [WIP] Card details
+- Lists and cards are saved in `localStorage `.
 
 ## Development
 
